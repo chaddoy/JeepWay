@@ -1,9 +1,12 @@
 'use strict';
 
 var Hapi = require('hapi');
+var Good = require('good');
 
 var server = new Hapi.Server();
-server.connection( { port: 3000 } );
+server.connection( {
+	'port' : 3000
+} );
 
 server.route( {
 	'method'  : 'GET',
@@ -21,6 +24,25 @@ server.route( {
 	}
 } );
 
-server.start( function () {
-	console.log( 'Server running at:', server.info.uri );
+server.register( {
+	'register' : Good,
+	'options'  : {
+		'reporters' : [
+			{
+				'reporter' : require( 'good-console' ),
+				'events'   : {
+					'log'      : '*',
+					'response' : '*'
+				}
+			}
+		]
+	}
+}, function ( err ) {
+	if ( err ) {
+		throw err; // something bad happened loading the plugin
+	}
+
+	server.start( function () {
+		server.log( 'info', 'Server running at: ' + server.info.uri );
+	} );
 } );
