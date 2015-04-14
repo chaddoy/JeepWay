@@ -3,9 +3,13 @@
 var Hapi = require( 'hapi' );
 var Good = require( 'good' );
 var _    = require( 'underscore' );
+var mongoose = require( 'mongoose' );
+
+// connect to mongo
+mongoose.connect( 'mongodb://localhost/test' );
 
 // routes
-var jeepsRoute = _.union( require( './src/routes/jeeps' ) );
+var jeepsRoute = _.union( require( './src/jeeps/jeeps.route' ) );
 
 var server = new Hapi.Server();
 server.connection( {
