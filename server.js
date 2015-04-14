@@ -1,7 +1,11 @@
 'use strict';
 
-var Hapi = require('hapi');
-var Good = require('good');
+var Hapi = require( 'hapi' );
+var Good = require( 'good' );
+var _    = require( 'underscore' );
+
+// routes
+var jeepsRoute = _.union( require( './src/routes/jeeps' ) );
 
 var server = new Hapi.Server();
 server.connection( {
@@ -12,17 +16,11 @@ server.route( {
 	'method'  : 'GET',
 	'path'    : '/',
 	'handler' : function ( request, reply ) {
-		reply( 'Hello, world!' );
+		reply( 'JeepWay' );
 	}
 } );
 
-server.route( {
-	'method'  : 'GET',
-	'path'    : '/{name}',
-	'handler' : function ( request, reply ) {
-		reply( 'Hello, ' + encodeURIComponent( request.params.name ) + '!' );
-	}
-} );
+server.route( jeepsRoute );
 
 server.register( {
 	'register' : Good,
@@ -39,10 +37,12 @@ server.register( {
 	}
 }, function ( err ) {
 	if ( err ) {
-		throw err; // something bad happened loading the plugin
+		throw err;
 	}
 
-	server.start( function () {
-		server.log( 'info', 'Server running at: ' + server.info.uri );
-	} );
+	if ( !module.parent ) {
+		server.start( function () {
+			server.log( 'info', 'Server running at: ' + server.info.uri );
+		} );
+	}
 } );
