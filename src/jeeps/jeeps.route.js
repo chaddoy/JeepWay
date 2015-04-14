@@ -18,10 +18,53 @@ module.exports = [
 		}
 	},
 	{
+		'method'  : 'GET',
+		'path'    : '/jeep/{id}',
+		'handler' : function ( request, reply ) {
+			Jeep.findOne( {
+				'_id' : request.params.id
+			}, function ( err, jeeps ) {
+				if ( err ) {
+					return console.error( err );
+				}
+
+				console.log( jeeps );
+				reply( jeeps );
+			} );
+		}
+	},
+	{
 		'method'  : 'POST',
 		'path'    : '/jeep',
 		'handler' : function ( request, reply ) {
-			reply( request.payload );
+			var jeep = new Jeep( {
+				'jeepId'      : request.payload.jeepId,
+				'origin'      : request.payload.origin,
+				'destination' : request.payload.destination,
+				'coordinates' : request.payload.coordinates
+			} );
+
+			jeep.save( function ( err, jeep ) {
+				if ( err ) {
+					return console.error( err );
+				}
+
+				console.log( jeep );
+				reply( jeep );
+			} );
+		}
+	},
+	{
+		'method'  : 'DELETE',
+		'path'    : '/jeep/{id}',
+		'handler' : function ( request, reply ) {
+			Jeep.remove( { '_id' : request.params.id }, function ( err ) {
+				if ( err ) {
+					return console.error( err );
+				}
+
+				reply( 'deleted' );
+			} );
 		}
 	}
 ];
