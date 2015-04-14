@@ -55,10 +55,40 @@ module.exports = [
 		}
 	},
 	{
+		'method'  : 'PUT',
+		'path'    : '/jeep/{id}',
+		'handler' : function ( request, reply ) {
+			Jeep.findOneAndUpdate(
+			// query
+			{ '_id' : request.params.id },
+
+			// update
+			request.payload,
+
+			// options
+			{ 'new' : true },
+
+			// callback
+			function ( err, jeep ) {
+				if ( err ) {
+					return console.error( err );
+				}
+
+				console.log( jeep );
+				reply( 'updated' );
+			} );
+		}
+	},
+	{
 		'method'  : 'DELETE',
 		'path'    : '/jeep/{id}',
 		'handler' : function ( request, reply ) {
-			Jeep.remove( { '_id' : request.params.id }, function ( err ) {
+			Jeep.findOneAndRemove(
+			// query
+			{ '_id' : request.params.id },
+
+			// callback
+			function ( err ) {
 				if ( err ) {
 					return console.error( err );
 				}
